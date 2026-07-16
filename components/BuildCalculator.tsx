@@ -11,6 +11,7 @@ import {
   type AspdInput,
 } from "@/lib/calc/aspd";
 import { calculateRefine, REFINE_MAX } from "@/lib/calc/refine";
+import { estimateRefineCost } from "@/lib/refineCost";
 import { estimateDamage } from "@/lib/damageCalc";
 import { ELEMENTS } from "@/lib/data/elements";
 import { encodeBuild, decodeBuild } from "@/lib/buildEncode";
@@ -186,6 +187,10 @@ export function BuildCalculator() {
     [baseAspd, agi, dex, buffs]
   );
   const refine = useMemo(() => calculateRefine(refineTarget), [refineTarget]);
+  const refineCost = useMemo(
+    () => estimateRefineCost(0, refineTarget),
+    [refineTarget]
+  );
 
   const pct = Math.min(100, Math.round((aspd.aspd / ASPD_CAP) * 100));
 
@@ -339,6 +344,25 @@ export function BuildCalculator() {
                 </li>
               ))}
             </ul>
+            <div className="mt-3 pt-3 border-t border-panel-2">
+              <p className="text-xs uppercase tracking-wide text-foreground/50 mb-1">
+                Cost to reach +{refineTarget} (est.)
+              </p>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="rounded-md bg-panel-2 py-2">
+                  <p className="text-xs text-foreground/55">Attempts</p>
+                  <p className="font-mono text-gold-soft">{refineCost.attempts}</p>
+                </div>
+                <div className="rounded-md bg-panel-2 py-2">
+                  <p className="text-xs text-foreground/55">Zeny</p>
+                  <p className="font-mono text-gold-soft">{refineCost.zeny.toLocaleString()}</p>
+                </div>
+                <div className="rounded-md bg-panel-2 py-2">
+                  <p className="text-xs text-foreground/55">Ore</p>
+                  <p className="font-mono text-gold-soft">{refineCost.ore}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </div>
