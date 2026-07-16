@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, Stat, PageHeader, Chip } from "@/components/ui";
+import { Card, Stat, PageHeader, Chip, GradientText } from "@/components/ui";
 import { LiveCodeBadge } from "@/components/LiveCodeBadge";
 import { classes } from "@/lib/data/classes";
 import { monsters } from "@/lib/data/monsters";
@@ -22,44 +22,48 @@ const tools = [
 export default function HomePage() {
   return (
     <div className="space-y-10">
-      <section className="relative text-center py-12 sm:py-16">
-        <div className="ornament mb-5 justify-center">
-          <span className="text-xs uppercase tracking-[0.3em] text-gold-deep">
-            Ragnarok · The New World
-          </span>
-        </div>
-        <h1 className="font-display text-5xl sm:text-6xl font-extrabold text-ember drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
-          RagnaSys
-        </h1>
-        <p className="text-foreground/75 mt-3 max-w-2xl mx-auto text-base">
-          A companion toolkit for{" "}
-          <span className="text-gold-soft font-semibold">Ragnarok: The New World</span> —
-          browse class data, track MVP respawns, calculate builds, hunt chests, and follow guides.
-        </p>
-        <div className="flex justify-center gap-3 mt-7 flex-wrap">
-          <Link href="/mvp" className="btn-gold px-5 py-2.5 rounded-md font-semibold">
-            MVP Timer
-          </Link>
-          <Link href="/guide" className="btn-ghost px-5 py-2.5 rounded-md font-semibold">
-            Class Guides
-          </Link>
-          <Link href="/builder" className="btn-ghost px-5 py-2.5 rounded-md font-semibold">
-            Build Calculator
-          </Link>
+      <section className="relative text-center py-14 sm:py-20 overflow-hidden">
+        <div className="glow left-1/2 top-0 h-64 w-64 -translate-x-1/2 bg-gold/40" />
+        <div className="glow left-1/4 bottom-0 h-48 w-48 bg-royal/30" />
+        <div className="relative animate-rise">
+          <div className="ornament mb-5 justify-center">
+            <span className="text-xs uppercase tracking-[0.3em] text-gold-deep">
+              Ragnarok · The New World
+            </span>
+          </div>
+          <h1 className="font-display text-5xl sm:text-6xl font-extrabold gradient-text drop-shadow-[0_2px_10px_rgba(170,112,51,0.25)]">
+            RagnaSys
+          </h1>
+          <p className="text-foreground/75 mt-3 max-w-2xl mx-auto text-base">
+            A companion toolkit for{" "}
+            <GradientText className="font-semibold">Ragnarok: The New World</GradientText> —
+            browse class data, track MVP respawns, calculate builds, hunt chests, and follow guides.
+          </p>
+          <div className="flex justify-center gap-3 mt-7 flex-wrap">
+            <Link href="/mvp" className="btn-gold px-5 py-2.5 rounded-lg font-semibold">
+              MVP Timer
+            </Link>
+            <Link href="/guide" className="btn-ghost px-5 py-2.5 rounded-lg font-semibold">
+              Class Guides
+            </Link>
+            <Link href="/builder" className="btn-ghost px-5 py-2.5 rounded-lg font-semibold">
+              Build Calculator
+            </Link>
+          </div>
         </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Link href="/database/classes">
+        <Link href="/database/classes" className="block">
           <Stat value={classes.length} label="Classes" />
         </Link>
-        <Link href="/database/monsters">
+        <Link href="/database/monsters" className="block">
           <Stat value={monsters.length} label="Monsters" />
         </Link>
-        <Link href="/database/codes">
+        <Link href="/database/codes" className="block">
           <Stat value={<LiveCodeBadge fallback={8} />} label="Active codes" />
         </Link>
-        <Link href="/builder">
+        <Link href="/builder" className="block">
           <Stat value={193} label="ASPD cap" />
         </Link>
       </section>
@@ -68,8 +72,8 @@ export default function HomePage() {
         <PageHeader eyebrow="Tools" title="Everything in one place" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((t) => (
-            <Link key={t.href} href={t.href}>
-              <Card className="h-full hover-lift">
+            <Link key={t.href} href={t.href} className="block">
+              <Card modern className="h-full">
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="font-display text-lg font-semibold text-gold-deep">
                     {t.title}

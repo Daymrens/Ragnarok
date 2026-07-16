@@ -24,7 +24,7 @@ export function StrategyPage() {
         description="Elemental matchups, card combos, and PvP/Guild War notes."
       />
 
-      <section className="rounded-xl border border-panel-2 bg-panel p-4">
+      <section className="card-modern p-4">
         <h2 className="font-semibold text-gold-soft mb-1">Elemental Matchup Chart</h2>
         <p className="text-xs text-foreground/60 mb-3">
           Pick an attacking element to highlight. Click a defender cell to inspect it.
@@ -95,7 +95,7 @@ export function StrategyPage() {
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-panel-2 bg-panel p-4">
+        <div className="card-modern p-4">
           <h2 className="font-semibold text-gold-soft mb-2">Card Combos</h2>
           <ul className="text-sm space-y-1 text-foreground/75">
             <li>• Ifrit (weapon) + Kiel D-01 (head) = burst + faster cast for mages.</li>
@@ -104,7 +104,7 @@ export function StrategyPage() {
             <li>• Pair damage cards with the right element per target monster.</li>
           </ul>
         </div>
-        <div className="rounded-xl border border-panel-2 bg-panel p-4">
+        <div className="card-modern p-4">
           <h2 className="font-semibold text-gold-soft mb-2">Guild War / PvP</h2>
           <ul className="text-sm space-y-1 text-foreground/75">
             <li>• Knight: GvG frontline — Bowling Bash + Lion&apos;s Roar lock groups.</li>

@@ -152,8 +152,8 @@ export function MvpTracker() {
           return (
             <div
               key={m.id}
-              className={`rounded-xl border p-4 ${
-                spawning ? "border-gold animate-pulse-glow bg-gold/5" : "border-panel-2 bg-panel"
+              className={`card-modern ${
+                spawning ? "border-gold animate-pulse-glow !bg-gold/5" : ""
               }`}
             >
               <div className="flex items-center justify-between">

@@ -39,7 +39,7 @@ export function MonsterList() {
         <select
           value={el}
           onChange={(e) => setEl(e.target.value)}
-          className="rounded-md bg-panel-2 border border-panel-2 px-2 py-1.5 text-sm"
+          className="input-field rounded-md px-2 py-1.5 text-sm"
         >
           <option value="all">All elements</option>
           {ELEMENTS.map((e) => (

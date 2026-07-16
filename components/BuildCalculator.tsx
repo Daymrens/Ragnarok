@@ -138,7 +138,7 @@ export function BuildCalculator() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* ASPD */}
-        <section className="rounded-xl border border-panel-2 bg-panel p-4 space-y-4">
+        <section className="card-modern p-4 space-y-4">
           <h2 className="font-semibold text-gold-soft">ASPD Calculator</h2>
 
           <label className="block text-sm">
@@ -185,7 +185,7 @@ export function BuildCalculator() {
         </section>
 
         {/* Refine */}
-        <section className="rounded-xl border border-panel-2 bg-panel p-4 space-y-4">
+        <section className="card-modern p-4 space-y-4">
           <h2 className="font-semibold text-gold-soft">Safe Refine Planner</h2>
           <label className="block text-sm">
             <span className="text-foreground/70">
@@ -218,7 +218,7 @@ export function BuildCalculator() {
       </div>
 
       {/* Gear Set Builder */}
-      <section className="rounded-xl border border-panel-2 bg-panel p-4 space-y-4">
+      <section className="card-modern p-4 space-y-4">
         <h2 className="font-semibold text-gold-soft">Gear Set Builder</h2>
         <p className="text-xs text-foreground/65">
           Pick one piece per slot to preview summed stats. Safe refine to +15 never breaks gear.
@@ -264,7 +264,7 @@ export function BuildCalculator() {
       </section>
 
       {/* Saved builds */}
-      <section className="rounded-xl border border-panel-2 bg-panel p-4 space-y-3">
+      <section className="card-modern p-4 space-y-3">
         <h2 className="font-semibold text-gold-soft">Saved Builds</h2>
         <div className="flex gap-2">
           <input

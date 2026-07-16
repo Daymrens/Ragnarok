@@ -67,12 +67,12 @@ export function DailyTracker() {
       />
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-xl border border-panel-2 bg-panel p-4">
+        <div className="card-modern p-4">
           <h2 className="font-semibold text-gold-soft">Next server reset</h2>
           <p className="text-3xl font-mono text-gold mt-2">{fmt(reset)}</p>
           <p className="text-xs text-foreground/50 mt-1">Routine resets at 5:00 AM.</p>
         </div>
-        <div className="rounded-xl border border-panel-2 bg-panel p-4">
+        <div className="card-modern p-4">
           <h2 className="font-semibold text-gold-soft mb-2">Daily routine (priority order)</h2>
           <ul className="space-y-2">
             {ORDERED.map((c) => (
@@ -105,7 +105,7 @@ export function DailyTracker() {
             const end = new Date(e.end).getTime();
             const remain = end - now;
             return (
-              <div key={e.id} className="rounded-xl border border-panel-2 bg-panel p-4">
+              <div key={e.id} className="card-modern p-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-gold-soft">{e.name}</h3>
                   <span className="text-xs uppercase text-foreground/50">{e.type}</span>

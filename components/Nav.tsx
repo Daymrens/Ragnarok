@@ -56,7 +56,7 @@ export function Nav() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gold-deep/25 bg-background/80 backdrop-blur-md shadow-[0_4px_18px_rgba(92,64,24,0.12)]">
+    <header className="sticky top-0 z-50 glass shadow-[0_4px_18px_rgba(92,64,24,0.10)]">
       <nav className="w-full max-w-6xl mx-auto px-4 h-16 flex items-center gap-1">
         <Link href="/" className="mr-3 flex items-center gap-2 shrink-0 group">
           <Crest />
@@ -70,7 +70,7 @@ export function Nav() {
             <li key={l.href}>
               <Link
                 href={l.href}
-                className={`px-3 py-2 rounded-md text-sm whitespace-nowrap transition-colors ${
+                className={`px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-all ${
                   isActive(l.href)
                     ? "bg-gradient-to-b from-gold-soft/30 to-gold/10 text-gold-deep font-semibold shadow-[inset_0_0_0_1px_rgba(170,112,51,0.4)]"
                     : "text-foreground/75 hover:text-gold-deep hover:bg-ocean/60"
@@ -85,7 +85,7 @@ export function Nav() {
           <button
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
-            className={`px-3 py-2 rounded-md text-sm whitespace-nowrap transition-colors ${
+            className={`px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-all ${
               more.some((m) => isActive(m.href))
                 ? "bg-gradient-to-b from-gold-soft/30 to-gold/10 text-gold-deep font-semibold shadow-[inset_0_0_0_1px_rgba(170,112,51,0.4)]"
                 : "text-foreground/75 hover:text-gold-deep hover:bg-ocean/60"
@@ -100,16 +100,16 @@ export function Nav() {
                 onClick={() => setOpen(false)}
                 aria-hidden
               />
-              <ul className="surface absolute right-0 mt-1 z-50 w-52 rounded-lg p-1 max-h-[70vh] overflow-y-auto">
+              <ul className="card-modern absolute right-0 mt-2 z-50 w-52 rounded-xl p-1.5 max-h-[70vh] overflow-y-auto">
                 {more.map((m) => (
                   <li key={m.href}>
                     <Link
                       href={m.href}
                       onClick={() => setOpen(false)}
-                      className={`block px-3 py-2 text-sm rounded-md hover:bg-ocean/70 ${
+                      className={`block px-3 py-2 text-sm rounded-lg transition-colors ${
                         isActive(m.href)
-                          ? "text-gold-deep font-semibold"
-                          : "text-foreground/80"
+                          ? "bg-gold/15 text-gold-deep font-semibold"
+                          : "text-foreground/80 hover:bg-ocean/70"
                       }`}
                     >
                       {m.label}

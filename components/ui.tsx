@@ -3,13 +3,30 @@ import { ReactNode } from "react";
 export function Card({
   children,
   className = "",
+  modern = false,
+}: {
+  children: ReactNode;
+  className?: string;
+  modern?: boolean;
+}) {
+  return (
+    <div
+      className={`${modern ? "card-modern" : "surface"} rounded-xl p-4 ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Modern gradient-bordered surface for sections/panels. */
+export function Surface({
+  children,
+  className = "",
 }: {
   children: ReactNode;
   className?: string;
 }) {
-  return (
-    <div className={`surface rounded-xl p-4 ${className}`}>{children}</div>
-  );
+  return <div className={`card-modern p-4 ${className}`}>{children}</div>;
 }
 
 export function SectionTitle({
@@ -21,10 +38,40 @@ export function SectionTitle({
 }) {
   return (
     <div className={`ornament mb-4 ${className}`}>
-      <span className="text-ember font-display text-lg font-semibold tracking-wide">
+      <span className="gradient-text font-display text-lg font-semibold tracking-wide">
         {children}
       </span>
     </div>
+  );
+}
+
+/** Gradient hero/emphasis text. */
+export function GradientText({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <span className={`gradient-text ${className}`}>{children}</span>;
+}
+
+/** Segmented/pill filter button. */
+export function Pill({
+  active,
+  children,
+  onClick,
+  className = "",
+}: {
+  active?: boolean;
+  children: ReactNode;
+  onClick?: () => void;
+  className?: string;
+}) {
+  return (
+    <button type="button" data-active={active ? "true" : "false"} onClick={onClick} className={`pill ${className}`}>
+      {children}
+    </button>
   );
 }
 

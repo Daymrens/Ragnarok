@@ -37,10 +37,12 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col text-foreground">
         <Nav />
-        <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-6">{children}</main>
-        <footer className="border-t border-gold-deep/20 py-4 text-center text-xs text-foreground/60">
-          RagnaSys is a fan-made companion tool. Not affiliated with Gravity. Data is
-          community-sourced and may be inaccurate — verify in-game.
+        <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-6 animate-rise">{children}</main>
+        <footer className="border-t border-gold-deep/15 py-5 text-center text-xs text-foreground/55">
+          <p>
+            RagnaSys is a fan-made companion tool. Not affiliated with Gravity. Data is
+            community-sourced and may be inaccurate — verify in-game.
+          </p>
         </footer>
       </body>
     </html>
