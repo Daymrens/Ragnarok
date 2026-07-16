@@ -6,14 +6,18 @@ import { getActiveEvents } from "@/lib/data/events";
 const RESET_HOUR = 5; // server reset 5:00 AM
 const CHECK_KEY = "ragnasys.daily.checklist";
 
+// Ordered by recommended priority (stamina/reward efficiency). Source: classic RO
+// daily-loop guidance + ROW launch coverage; tune as the meta settles.
 const CHECKLIST = [
-  { id: "tc", label: "Time Corridor ×3 cleared" },
-  { id: "guild", label: "Guild Orders completed" },
-  { id: "life", label: "Life Stamina spent (mining/gathering)" },
-  { id: "stall", label: "Player stalls checked for deals" },
-  { id: "codes", label: "Gift codes redeemed" },
-  { id: "couple", label: "Couple / home daily rewards collected" },
+  { id: "tc", label: "Time Corridor ×3 cleared", hint: "Highest exp/stamina — do first", priority: 1 },
+  { id: "guild", label: "Guild Orders completed", hint: "Join a guild by day 2; orders reset daily", priority: 2 },
+  { id: "mvp", label: "MVP hunt (post-reset window)", hint: "Best loot right after 5 AM reset", priority: 3 },
+  { id: "life", label: "Life Stamina spent (mining/gathering)", hint: "Feeds crafting + auction economy", priority: 4 },
+  { id: "codes", label: "Gift codes redeemed", hint: "Free Zeny/items, often time-limited", priority: 5 },
+  { id: "stall", label: "Player stalls checked for deals", hint: "Flip gear/cards for profit", priority: 6 },
+  { id: "couple", label: "Couple / home daily rewards", hint: "Steady passive income if partnered", priority: 7 },
 ];
+const ORDERED = [...CHECKLIST].sort((a, b) => a.priority - b.priority);
 
 function fmt(ms: number): string {
   if (ms <= 0) return "ended";
@@ -67,20 +71,27 @@ export function DailyTracker() {
         <div className="rounded-xl border border-panel-2 bg-panel p-4">
           <h2 className="font-semibold text-gold-soft">Next server reset</h2>
           <p className="text-3xl font-mono text-gold mt-2">{fmt(reset)}</p>
+          <p className="text-xs text-foreground/50 mt-1">Routine resets at 5:00 AM.</p>
         </div>
         <div className="rounded-xl border border-panel-2 bg-panel p-4">
-          <h2 className="font-semibold text-gold-soft mb-2">Daily checklist</h2>
-          <ul className="space-y-1.5">
-            {CHECKLIST.map((c) => (
-              <li key={c.id} className="flex items-center gap-2 text-sm">
+          <h2 className="font-semibold text-gold-soft mb-2">Daily routine (priority order)</h2>
+          <ul className="space-y-2">
+            {ORDERED.map((c) => (
+              <li key={c.id} className="flex items-start gap-2 text-sm">
                 <input
                   type="checkbox"
                   checked={!!checks[c.id]}
                   onChange={() => toggle(c.id)}
-                  className="accent-gold"
+                  className="accent-gold mt-0.5"
                 />
-                <span className={checks[c.id] ? "text-foreground/40 line-through" : "text-foreground/80"}>
-                  {c.label}
+                <span className="min-w-0">
+                  <span className={checks[c.id] ? "text-foreground/40 line-through" : "text-foreground/80"}>
+                    <span className="text-gold-deep/70 font-mono mr-1">{c.priority}.</span>
+                    {c.label}
+                  </span>
+                  {!checks[c.id] && c.hint && (
+                    <span className="block text-xs text-foreground/50">{c.hint}</span>
+                  )}
                 </span>
               </li>
             ))}

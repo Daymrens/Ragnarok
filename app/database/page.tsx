@@ -16,6 +16,9 @@ const items = [
   { href: "/database/gear", title: "Gear", sub: `${gear.length} equipment pieces` },
   { href: "/database/pets", title: "Pets & Mounts", sub: `${pets.length} tames & mounts` },
   { href: "/database/codes", title: "Redeem Codes", sub: `${getActiveCodes().length} active codes` },
+  { href: "/world", title: "World Regions", sub: "Monsters & exploration by region" },
+  { href: "/planner", title: "Class Planner", sub: "Compare all 8 classes" },
+  { href: "/leveling", title: "Leveling Routes", sub: "Best zones by level" },
 ];
 
 export default function DatabasePage() {

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { GlobalSearch } from "@/components/GlobalSearch";
 
 const primary = [
   { href: "/", label: "Home" },
@@ -17,7 +18,9 @@ const more = [
   { href: "/strategy", label: "Strategy" },
   { href: "/crafting", label: "Crafting" },
   { href: "/map", label: "Chest Map" },
+  { href: "/world", label: "World Regions" },
   { href: "/leveling", label: "Leveling" },
+  { href: "/planner", label: "Class Planner" },
   { href: "/database/pets", label: "Pets & Mounts" },
   { href: "/guide/player", label: "Player Guide" },
 ];
@@ -60,6 +63,7 @@ export function Nav() {
             RagnaSys
           </span>
         </Link>
+        <GlobalSearch />
         <ul className="flex items-center gap-1 overflow-x-auto">
           {primary.map((l) => (
             <li key={l.href}>
