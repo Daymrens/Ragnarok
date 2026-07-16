@@ -1,14 +1,26 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { loadBuilds, savedToState } from "@/lib/buildStore";
+import { loadRoster, type RosterCharacter } from "@/lib/buildStore";
 import { decodeBuild } from "@/lib/buildEncode";
 import type { BuildState } from "@/lib/data/types";
 import { BuildDiff } from "@/components/BuildDiff";
 import { ListHeader, Card } from "@/components/ui";
 
+interface SavedRef {
+  id: string;
+  name: string;
+  state: BuildState;
+}
+
 export default function ComparePage() {
-  const saved = useMemo(() => (typeof window !== "undefined" ? loadBuilds() : []), []);
+  const saved = useMemo<SavedRef[]>(() => {
+    if (typeof window === "undefined") return [];
+    const roster = loadRoster();
+    return roster.characters.flatMap((c: RosterCharacter) =>
+      c.presets.map((p) => ({ id: `${c.id}:${p.job}`, name: p.name, state: p.state }))
+    );
+  }, []);
   const [pickA, setPickA] = useState("");
   const [pickB, setPickB] = useState("");
   const [linkA, setLinkA] = useState("");
@@ -20,7 +32,7 @@ export default function ComparePage() {
     }
     if (pick) {
       const b = saved.find((s) => s.id === pick);
-      return b ? savedToState(b) : null;
+      return b ? b.state : null;
     }
     return null;
   }

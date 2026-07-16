@@ -17,6 +17,7 @@ import { ELEMENTS } from "@/lib/data/elements";
 import { encodeBuild, decodeBuild } from "@/lib/buildEncode";
 import type { BuildState } from "@/lib/data/types";
 import { ScreenshotImport } from "@/components/ScreenshotImport";
+import { JobSwitcher } from "@/components/JobSwitcher";
 import { ListHeader } from "@/components/ui";
 
 const SLOTS: GearSlot[] = [
@@ -39,26 +40,13 @@ function parseStats(stats: string): Record<string, number> {
   return out;
 }
 
-interface SavedBuild {
-  id: string;
-  name: string;
-  classId: string;
-  agi: number;
-  dex: number;
-  baseAspd: number;
-}
-
-const BUILD_KEY = "ragnasys.builds";
-
-function loadBuilds(): SavedBuild[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(BUILD_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
+// Roster (Job Freedom) schema — multi-preset per character.
+import {
+  loadRoster,
+  saveRoster,
+  type RosterState,
+  type JobPreset,
+} from "@/lib/buildStore";
 
 export function BuildCalculator() {
   const [classId, setClassId] = useState(classes[0].id);
@@ -80,9 +68,13 @@ export function BuildCalculator() {
   });
   const [refineTarget, setRefineTarget] = useState(10);
   const [buildName, setBuildName] = useState("");
-  const [builds, setBuilds] = useState<SavedBuild[]>(() =>
-    typeof window !== "undefined" ? loadBuilds() : []
+  const [roster, setRoster] = useState<RosterState>(() =>
+    typeof window !== "undefined" ? loadRoster() : { version: 1, characters: [] }
   );
+  const [activeCharId, setActiveCharId] = useState<string | null>(() =>
+    typeof window !== "undefined" ? loadRoster().characters[0]?.id ?? null : null
+  );
+  const [activeJob, setActiveJob] = useState<string | null>(null);
   const [pendingShared, setPendingShared] = useState<BuildState | null>(() => {
     if (typeof window === "undefined") return null;
     const b = new URLSearchParams(window.location.search).get("b");
@@ -211,33 +203,70 @@ export function BuildCalculator() {
 
   const pct = Math.min(100, Math.round((aspd.aspd / ASPD_CAP) * 100));
 
-  function saveBuild() {
+  function commitRoster(next: RosterState) {
+    setRoster(next);
+    saveRoster(next);
+  }
+
+  function savePreset() {
     if (!buildName.trim()) return;
-    const b: SavedBuild = {
-      id: `${Date.now()}`,
-      name: buildName.trim(),
-      classId,
-      agi,
-      dex,
-      baseAspd,
-    };
-    const next = [...builds, b];
-    setBuilds(next);
-    localStorage.setItem(BUILD_KEY, JSON.stringify(next));
+    const state = currentState();
+    const preset: JobPreset = { job: classId, name: buildName.trim(), state };
+    let next: RosterState;
+    const charId = activeCharId ?? `char-${Date.now()}`;
+    const existing = roster.characters.find((c) => c.id === charId);
+    if (existing) {
+      next = {
+        ...roster,
+        characters: roster.characters.map((c) =>
+          c.id === charId
+            ? {
+                ...c,
+                presets: [
+                  ...c.presets.filter((p) => p.job !== classId),
+                  preset,
+                ],
+              }
+            : c
+        ),
+      };
+    } else {
+      next = {
+        ...roster,
+        characters: [
+          ...roster.characters,
+          { id: charId, name: "Character", presets: [preset] },
+        ],
+      };
+      setActiveCharId(charId);
+    }
+    commitRoster(next);
+    setActiveJob(classId);
     setBuildName("");
   }
 
-  function loadBuild(b: SavedBuild) {
-    setClassId(b.classId);
-    setAgi(b.agi);
-    setDex(b.dex);
-    setBaseAspd(b.baseAspd);
+  function selectPreset(charId: string, preset: JobPreset | undefined) {
+    if (!preset) return;
+    const c = roster.characters.find((x) => x.id === charId);
+    setActiveCharId(charId);
+    setActiveJob(preset.job);
+    applyState(preset.state);
+    if (c) setBuildName(preset.name);
   }
 
-  function deleteBuild(id: string) {
-    const next = builds.filter((b) => b.id !== id);
-    setBuilds(next);
-    localStorage.setItem(BUILD_KEY, JSON.stringify(next));
+  function deletePreset(charId: string, job: string) {
+    const next: RosterState = {
+      ...roster,
+      characters: roster.characters
+        .map((c) =>
+          c.id === charId
+            ? { ...c, presets: c.presets.filter((p) => p.job !== job) }
+            : c
+        )
+        .filter((c) => c.presets.length > 0),
+    };
+    commitRoster(next);
+    if (activeCharId === charId && activeJob === job) setActiveJob(null);
   }
 
   return (
@@ -501,49 +530,66 @@ export function BuildCalculator() {
         <ScreenshotImport onApply={applyScreenshot} />
       </section>
 
-      {/* Saved builds */}
+      {/* Job Freedom roster */}
       <section className="card-modern p-4 space-y-3">
-        <h2 className="font-semibold text-gold-soft">Saved Builds</h2>
+        <h2 className="font-semibold text-gold-soft">Job Freedom Roster</h2>
+        <p className="text-xs text-foreground/65">
+          Save a stat/skill preset per job on one character and quick-switch via Job Freedom.
+        </p>
+        <JobSwitcher
+          roster={roster}
+          activeCharId={activeCharId}
+          activeJob={activeJob}
+          onSelectPreset={(charId, preset) => selectPreset(charId, preset)}
+          onAddPreset={savePreset}
+        />
         <div className="flex gap-2">
           <input
             value={buildName}
             onChange={(e) => setBuildName(e.target.value)}
-            placeholder="Build name (e.g. Crit Assassin)"
-            className="flex-1 rounded-md bg-panel-2 border border-panel-2 px-2 py-1.5 text-sm"
+            placeholder="Preset name (e.g. Crit Assassin)"
+            className="input-field flex-1 rounded-md px-2 py-1.5 text-sm"
           />
           <button
-            onClick={saveBuild}
+            onClick={savePreset}
             className="px-3 py-1.5 rounded-md bg-gold text-midnight text-sm font-semibold hover:bg-gold-soft"
           >
-            Save
+            Save current
           </button>
         </div>
-        {builds.length === 0 ? (
-          <p className="text-sm text-foreground/50">No builds saved yet.</p>
+        {roster.characters.length === 0 ? (
+          <p className="text-sm text-foreground/50">
+            No presets saved yet. Fill in stats and save your first job preset.
+          </p>
         ) : (
           <ul className="space-y-2">
-            {builds.map((b) => {
-              const c = classes.find((x) => x.id === b.classId);
-              return (
-                <li
-                  key={b.id}
-                  className="flex items-center justify-between border border-panel-2 rounded-md px-3 py-2 text-sm"
-                >
-                  <button onClick={() => loadBuild(b)} className="text-left hover:text-gold-soft">
-                    <span className="font-medium">{b.name}</span>{" "}
-                    <span className="text-foreground/50">
-                      ({c?.name}) AGI {b.agi} / DEX {b.dex}
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => deleteBuild(b.id)}
-                    className="text-crimson text-xs hover:underline"
+            {roster.characters.flatMap((c) =>
+              c.presets.map((p) => {
+                const cls = classes.find((x) => x.id === p.job);
+                return (
+                  <li
+                    key={`${c.id}-${p.job}`}
+                    className="flex items-center justify-between border border-panel-2 rounded-md px-3 py-2 text-sm"
                   >
-                    Delete
-                  </button>
-                </li>
-              );
-            })}
+                    <button
+                      onClick={() => selectPreset(c.id, p)}
+                      className="text-left hover:text-gold-soft"
+                    >
+                      <span className="font-medium">{p.name}</span>{" "}
+                      <span className="text-foreground/50">
+                        ({cls?.name}) · {c.name}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => deletePreset(c.id, p.job)}
+                      className="text-crimson text-xs hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                );
+              })
+            )}
           </ul>
         )}
       </section>
