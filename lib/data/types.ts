@@ -119,6 +119,10 @@ export interface LifeSkill {
   name: string;
   description: string;
   outputs: string[];
+  /** recommended early-game priority flag */
+  priority?: boolean;
+  /** what feeds this skill / what it feeds */
+  feeds?: string[];
 }
 
 export interface CraftStation {
@@ -132,6 +136,48 @@ export interface MaterialSource {
   id: string;
   name: string;
   detail: string;
+}
+
+export interface CraftMaterial {
+  id: string;
+  name: string;
+  source: "Life Skill" | "MVP Drop" | "Shop" | "Vending" | "Quest" | "Time Corridor";
+  /** which life skill or system produces it, if any */
+  from?: string;
+  region?: string;
+  rarity: "Common" | "Uncommon" | "Rare" | "Epic";
+}
+
+export interface Recipe {
+  id: string;
+  name: string;
+  category: "Potion" | "Food" | "Gear Material" | "Ingot" | "Misc";
+  skill: string; // life skill id
+  station: string; // station id
+  level: number;
+  /** ingredient id -> qty */
+  ingredients: { material: string; qty: number }[];
+  /** life energy cost per craft */
+  energy: number;
+  result: string;
+  estimate?: boolean;
+}
+
+export interface RefineTier {
+  plus: number;
+  /** success rate at this step (estimate) */
+  rate: string;
+  /** zeny / material cost per attempt */
+  cost: string;
+  note?: string;
+}
+
+export interface UpgradeSystem {
+  id: string;
+  name: string;
+  description: string;
+  materials: string;
+  unlock?: string;
 }
 
 export interface Chest {

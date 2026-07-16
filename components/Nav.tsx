@@ -80,45 +80,46 @@ export function Nav() {
               </Link>
             </li>
           ))}
-          <li className="relative">
-            <button
-              onClick={() => setOpen((o) => !o)}
-              className={`px-3 py-2 rounded-md text-sm whitespace-nowrap transition-colors ${
-                more.some((m) => isActive(m.href))
-                  ? "bg-gradient-to-b from-gold-soft/30 to-gold/10 text-gold-deep font-semibold shadow-[inset_0_0_0_1px_rgba(170,112,51,0.4)]"
-                  : "text-foreground/75 hover:text-gold-deep hover:bg-ocean/60"
-              }`}
-            >
-              More ▾
-            </button>
-            {open && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setOpen(false)}
-                  aria-hidden
-                />
-                <ul className="surface absolute right-0 mt-1 z-50 w-48 rounded-lg p-1">
-                  {more.map((m) => (
-                    <li key={m.href}>
-                      <Link
-                        href={m.href}
-                        onClick={() => setOpen(false)}
-                        className={`block px-3 py-2 text-sm rounded-md hover:bg-ocean/70 ${
-                          isActive(m.href)
-                            ? "text-gold-deep font-semibold"
-                            : "text-foreground/80"
-                        }`}
-                      >
-                        {m.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </li>
         </ul>
+        <div className="relative ml-auto shrink-0">
+          <button
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            className={`px-3 py-2 rounded-md text-sm whitespace-nowrap transition-colors ${
+              more.some((m) => isActive(m.href))
+                ? "bg-gradient-to-b from-gold-soft/30 to-gold/10 text-gold-deep font-semibold shadow-[inset_0_0_0_1px_rgba(170,112,51,0.4)]"
+                : "text-foreground/75 hover:text-gold-deep hover:bg-ocean/60"
+            }`}
+          >
+            More ▾
+          </button>
+          {open && (
+            <>
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setOpen(false)}
+                aria-hidden
+              />
+              <ul className="surface absolute right-0 mt-1 z-50 w-52 rounded-lg p-1 max-h-[70vh] overflow-y-auto">
+                {more.map((m) => (
+                  <li key={m.href}>
+                    <Link
+                      href={m.href}
+                      onClick={() => setOpen(false)}
+                      className={`block px-3 py-2 text-sm rounded-md hover:bg-ocean/70 ${
+                        isActive(m.href)
+                          ? "text-gold-deep font-semibold"
+                          : "text-foreground/80"
+                      }`}
+                    >
+                      {m.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
       </nav>
     </header>
   );
