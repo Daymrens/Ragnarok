@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "scrape": "tsx scripts/scrape.ts",
-    "ingest-roworlddb": "tsx scripts/ingest-roworlddb.ts"
+    "ingest-roworlddb": "tsx scripts/ingest-roworlddb.ts",
+    "prebuild": "npm run ingest-roworlddb"
   },
   "dependencies": {
     "cheerio": "^1.2.0",

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card, SourceBadge } from "@/components/ui";
 import { getMergedCard } from "@/lib/data/roworlddb";
+import { cards } from "@/lib/data/cards";
 
 export default async function CardDetailPage({
   params,
@@ -9,7 +10,7 @@ export default async function CardDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const c = getMergedCard(id);
+  const c = getMergedCard(id) ?? cards.find((x) => x.id === id);
   if (!c) notFound();
 
   return (

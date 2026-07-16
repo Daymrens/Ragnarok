@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card, SourceBadge } from "@/components/ui";
 import { getMergedGearItem } from "@/lib/data/roworlddb";
+import { gear } from "@/lib/data/gear";
 
 export default async function GearDetailPage({
   params,
@@ -9,7 +10,7 @@ export default async function GearDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const g = getMergedGearItem(id);
+  const g = getMergedGearItem(id) ?? gear.find((x) => x.id === id);
   if (!g) notFound();
 
   const stats = g.stats
