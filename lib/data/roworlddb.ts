@@ -81,12 +81,32 @@ const GEAR_SLOT_BY_TYPE: Record<string, GearSlot> = {
   "207": "Accessory",
 };
 
-/** Curated monsters + non-duplicate RoworldDB monsters (flagged estimate). */
+/** Curated monsters enriched with RoworldDB images/data + non-duplicate extras. */
 export function getMergedMonsters(): Monster[] {
   const data = loadGenerated<{ monsters: RwMonster[] }>(
     "roworlddb_monsters.json"
   );
   if (!data?.monsters?.length) return curatedMonsters;
+
+  const byName = new Map<string, RwMonster>();
+  for (const m of data.monsters) {
+    if (m.name) byName.set(normName(m.name), m);
+  }
+
+  const enriched: Monster[] = curatedMonsters.map((c) => {
+    const rw = byName.get(normName(c.name));
+    if (!rw) return c;
+    return {
+      ...c,
+      // prefer RoworldDB image; keep curated fields unless they are placeholders
+      image: rw.image || c.image,
+      level: c.level > 0 ? c.level : rw.level || c.level,
+      element: c.element === "Neutral" && rw.element ? (cap(rw.element) as Element) : c.element,
+      race: c.race === "Formless" && rw.race ? (cap(rw.race) as Race) : c.race,
+      size: c.size === "Small" && rw.size ? (cap(rw.size) as Size) : c.size,
+    };
+  });
+
   const have = new Set(curatedMonsters.map((m) => normName(m.name)));
   const extras: Monster[] = data.monsters
     .filter((m) => m.name && !have.has(normName(m.name)))
@@ -104,7 +124,7 @@ export function getMergedMonsters(): Monster[] {
       estimate: true,
       image: m.image || undefined,
     }));
-  return [...curatedMonsters, ...extras];
+  return [...enriched, ...extras];
 }
 
 /** Look up a single monster by id across curated + RoworldDB data. */
@@ -122,10 +142,21 @@ export function getMergedCard(id: string): Card | undefined {
   return getMergedCards().find((c) => c.id === id);
 }
 
-/** Curated gear + non-duplicate RoworldDB equipment (flagged estimate). */
+/** Curated gear enriched with RoworldDB images + non-duplicate equipment. */
 export function getMergedGear(): Gear[] {
   const data = loadGenerated<{ items: RwGear[] }>("roworlddb_equipment.json");
   if (!data?.items?.length) return curatedGear;
+
+  const byName = new Map<string, RwGear>();
+  for (const g of data.items) {
+    if (g.name) byName.set(normName(g.name), g);
+  }
+
+  const enriched: Gear[] = curatedGear.map((c) => {
+    const rw = byName.get(normName(c.name));
+    return rw?.image ? { ...c, image: rw.image } : c;
+  });
+
   const have = new Set(curatedGear.map((g) => normName(g.name)));
   const extras: Gear[] = data.items
     .filter((g) => g.name && !have.has(normName(g.name)))
@@ -137,7 +168,7 @@ export function getMergedGear(): Gear[] {
       refineNote: "Safe refine to +15.",
       image: g.image || undefined,
     }));
-  return [...curatedGear, ...extras];
+  return [...enriched, ...extras];
 }
 
 /** Curated cards + non-duplicate RoworldDB cards. */
