@@ -234,6 +234,30 @@ export interface Build {
   notes?: string;
 }
 
+/** Full serializable calculator state (Phase 1 share links / Phase 6 presets). */
+export interface BuildState {
+  name: string;
+  classId: string;
+  baseAspd: number;
+  agi: number;
+  dex: number;
+  vit?: number;
+  int?: number;
+  str?: number;
+  luk?: number;
+  buffs: {
+    increaseAgi: boolean;
+    gatlingFever: boolean;
+    foodPotion: boolean;
+  };
+  refineTarget: number;
+  loadout: Record<string, string>;
+  atk?: number;
+  element?: Element;
+  targetElement?: Element;
+  targetDef?: number;
+}
+
 export type PetType = "Pet" | "Mount";
 export type CaptureMethod =
   | "Taming item"

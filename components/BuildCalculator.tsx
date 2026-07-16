@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { classes } from "@/lib/data/classes";
 import { gear } from "@/lib/data/gear";
-import type { GearSlot } from "@/lib/data/types";
+import type { GearSlot, Element } from "@/lib/data/types";
 import {
   calculateAspd,
   aspdLabel,
@@ -11,6 +11,8 @@ import {
   type AspdInput,
 } from "@/lib/calc/aspd";
 import { calculateRefine, REFINE_MAX } from "@/lib/calc/refine";
+import { encodeBuild, decodeBuild } from "@/lib/buildEncode";
+import type { BuildState } from "@/lib/data/types";
 import { ListHeader } from "@/components/ui";
 
 const SLOTS: GearSlot[] = [
@@ -59,6 +61,14 @@ export function BuildCalculator() {
   const [baseAspd, setBaseAspd] = useState(14);
   const [agi, setAgi] = useState(80);
   const [dex, setDex] = useState(60);
+  const [vit, setVit] = useState(0);
+  const [int, setInt] = useState(0);
+  const [str, setStr] = useState(0);
+  const [luk, setLuk] = useState(0);
+  const [atk, setAtk] = useState(100);
+  const [element, setElement] = useState<Element>("Neutral");
+  const [targetElement, setTargetElement] = useState<Element>("Neutral");
+  const [targetDef, setTargetDef] = useState(0);
   const [buffs, setBuffs] = useState<AspdInput["buffs"]>({
     increaseAgi: false,
     gatlingFever: false,
@@ -69,6 +79,13 @@ export function BuildCalculator() {
   const [builds, setBuilds] = useState<SavedBuild[]>(() =>
     typeof window !== "undefined" ? loadBuilds() : []
   );
+  const [pendingShared, setPendingShared] = useState<BuildState | null>(() => {
+    if (typeof window === "undefined") return null;
+    const b = new URLSearchParams(window.location.search).get("b");
+    if (!b) return null;
+    return decodeBuild(b);
+  });
+  const [linkCopied, setLinkCopied] = useState(false);
 
   // Gear Set Builder: one gear id per slot
   const [loadout, setLoadout] = useState<Record<GearSlot, string>>(() => {
@@ -76,6 +93,62 @@ export function BuildCalculator() {
     for (const s of SLOTS) init[s] = "";
     return init;
   });
+
+  function currentState(): BuildState {
+    return {
+      name: buildName || "Untitled Build",
+      classId,
+      baseAspd,
+      agi,
+      dex,
+      vit,
+      int: int,
+      str: str,
+      luk: luk,
+      buffs,
+      refineTarget,
+      loadout,
+      atk: atk,
+      element,
+      targetElement,
+      targetDef,
+    };
+  }
+
+  function applyState(s: BuildState) {
+    setClassId(s.classId);
+    setBaseAspd(s.baseAspd);
+    setAgi(s.agi);
+    setDex(s.dex);
+    setVit(s.vit ?? 0);
+    setInt(s.int ?? 0);
+    setStr(s.str ?? 0);
+    setLuk(s.luk ?? 0);
+    setBuffs(s.buffs);
+    setRefineTarget(s.refineTarget);
+    setLoadout({ ...loadout, ...s.loadout });
+    setAtk(s.atk ?? 100);
+    setElement(s.element ?? "Neutral");
+    setTargetElement(s.targetElement ?? "Neutral");
+    setTargetDef(s.targetDef ?? 0);
+  }
+
+  // Note: ?b= share links are read once via the lazy initializer above.
+  // If a build is already in progress, we surface a confirmation prompt
+  // (pendingShared) instead of silently overwriting the user's inputs.
+
+  function copyShareLink() {
+    const encoded = encodeBuild(currentState());
+    const url = `${window.location.origin}${window.location.pathname}?b=${encoded}`;
+    window.history.replaceState(null, "", `?b=${encoded}`);
+    navigator.clipboard?.writeText(url).then(
+      () => {
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
+      },
+      () => setLinkCopied(false)
+    );
+  }
 
   const setTotals = useMemo(() => {
     const totals: Record<string, number> = {};
@@ -136,10 +209,47 @@ export function BuildCalculator() {
         description="Estimate ASPD toward the 193 cap, plan safe-refine costs, and save builds."
       />
 
+      {pendingShared && (
+        <div className="card-modern p-4 flex flex-wrap items-center gap-3 justify-between">
+          <p className="text-sm text-foreground/80">
+            A shared build was detected. Load it and replace your current inputs?
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                applyState(pendingShared);
+                setPendingShared(null);
+                window.history.replaceState(null, "", window.location.pathname);
+              }}
+              className="px-3 py-1.5 rounded-md bg-gold text-midnight text-sm font-semibold hover:bg-gold-soft"
+            >
+              Load shared build
+            </button>
+            <button
+              onClick={() => {
+                setPendingShared(null);
+                window.history.replaceState(null, "", window.location.pathname);
+              }}
+              className="px-3 py-1.5 rounded-md border border-panel-2 text-sm hover:border-crimson/50 text-crimson"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="grid gap-4 lg:grid-cols-2">
         {/* ASPD */}
         <section className="card-modern p-4 space-y-4">
-          <h2 className="font-semibold text-gold-soft">ASPD Calculator</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-gold-soft">ASPD Calculator</h2>
+            <button
+              onClick={copyShareLink}
+              className="text-xs px-3 py-1.5 rounded-md btn-gold font-semibold"
+            >
+              {linkCopied ? "Link copied!" : "Copy Share Link"}
+            </button>
+          </div>
 
           <label className="block text-sm">
             <span className="text-foreground/70">Class</span>
