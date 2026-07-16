@@ -14,10 +14,12 @@ import path from "node:path";
 import { monsters as curatedMonsters } from "./monsters";
 import { gear as curatedGear } from "./gear";
 import { cards as curatedCards } from "./cards";
+import { mvps as curatedMvps } from "./mvps";
 import type {
   Monster,
   Gear,
   Card,
+  MVP,
   GearSlot,
   CardSlot,
   Element,
@@ -179,6 +181,61 @@ export function getMergedGear(): Gear[] {
     });
   }
   return [...enriched, ...extras];
+}
+
+/** Curated MVPs enriched with RoworldDB images + non-duplicate RoworldDB MVPs. */
+export function getMergedMvps(): MVP[] {
+  const data = loadGenerated<{ monsters: RwMonster[] }>(
+    "roworlddb_monsters.json"
+  );
+  if (!data?.monsters?.length) return curatedMvps;
+
+  const byName = new Map<string, RwMonster>();
+  for (const m of data.monsters) {
+    if (m.name) byName.set(normName(m.name), m);
+  }
+
+  const enriched: MVP[] = curatedMvps.map((c) => {
+    const rw = byName.get(normName(c.name));
+    if (!rw) return c;
+    return {
+      ...c,
+      image: rw.image || c.image,
+      level: c.level > 0 ? c.level : rw.level || c.level,
+      element: c.element === "Neutral" && rw.element ? (cap(rw.element) as Element) : c.element,
+    };
+  });
+
+  const have = new Set([
+    ...curatedMvps.map((m) => normName(m.name)),
+    ...enriched.map((m) => normName(m.name)),
+  ]);
+  const seen = new Set<string>();
+  const extras: MVP[] = [];
+  for (const m of data.monsters) {
+    if (!m.isMvp || !m.name) continue;
+    const key = normName(m.name);
+    if (have.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    extras.push({
+      id: `rw_${m.id}`,
+      name: m.name,
+      map: "Unknown",
+      element: (cap(m.element) as Element) ?? "Neutral",
+      level: m.level || 1,
+      respawnMin: 0,
+      respawnMax: 0,
+      drops: [],
+      estimate: true,
+      image: m.image || undefined,
+    });
+  }
+  return [...enriched, ...extras];
+}
+
+/** Look up a single MVP by id across curated + RoworldDB data. */
+export function getMergedMvp(id: string): MVP | undefined {
+  return getMergedMvps().find((m) => m.id === id);
 }
 
 /** Curated cards + non-duplicate RoworldDB cards. */

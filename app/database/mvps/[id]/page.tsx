@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Card, ElementBadge } from "@/components/ui";
+import { Card, ElementBadge, SourceBadge } from "@/components/ui";
 import { getMVP } from "@/lib/data/mvps";
+import { getMergedMvp } from "@/lib/data/roworlddb";
 import { elementMultiplier, ELEMENTS } from "@/lib/data/elements";
 
 const ELEMENT_HEX: Record<string, string> = {
@@ -16,7 +17,7 @@ export default async function MvpDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const m = getMVP(id);
+  const m = getMergedMvp(id) ?? getMVP(id);
   if (!m) notFound();
 
   const strong = ELEMENTS.filter((e) => elementMultiplier(e, m.element) > 1).slice(0, 3);
@@ -31,28 +32,41 @@ export default async function MvpDetailPage({
 
       <div className="flex items-center gap-4">
         <div
-          className="relative shrink-0 overflow-hidden rounded-lg border border-gold-deep/30 shadow-md"
+          className="relative shrink-0 overflow-hidden rounded-lg border border-gold-deep/30 shadow-md bg-gradient-to-b from-ocean/60 to-panel"
           style={{ width: 88, height: 88 }}
         >
-          <svg viewBox="0 0 100 100" className="h-full w-full">
-            <defs>
-              <radialGradient id={gid} cx="50%" cy="40%" r="65%">
-                <stop offset="0%" stopColor={hex} stopOpacity="0.95" />
-                <stop offset="100%" stopColor={hex} stopOpacity="0.25" />
-              </radialGradient>
-            </defs>
-            <circle cx="50" cy="50" r="46" fill={`url(#${gid})`} opacity="0.4" />
-            <path
-              d="M50 22 L60 42 L82 44 L65 60 L71 82 L50 70 L29 82 L35 60 L18 44 L40 42 Z"
-              fill="none"
-              stroke={hex}
-              strokeWidth="3"
-              strokeLinejoin="round"
+          {m.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={m.image}
+              alt={m.name}
+              className="h-full w-full object-contain"
+              loading="lazy"
             />
-          </svg>
+          ) : (
+            <svg viewBox="0 0 100 100" className="h-full w-full">
+              <defs>
+                <radialGradient id={gid} cx="50%" cy="40%" r="65%">
+                  <stop offset="0%" stopColor={hex} stopOpacity="0.95" />
+                  <stop offset="100%" stopColor={hex} stopOpacity="0.25" />
+                </radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="46" fill={`url(#${gid})`} opacity="0.4" />
+              <path
+                d="M50 22 L60 42 L82 44 L65 60 L71 82 L50 70 L29 82 L35 60 L18 44 L40 42 Z"
+                fill="none"
+                stroke={hex}
+                strokeWidth="3"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gold">{m.name}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gold">{m.name}</h1>
+            <SourceBadge id={m.id} />
+          </div>
           <div className="mt-2">
             <ElementBadge element={m.element} />
           </div>
