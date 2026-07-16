@@ -14,6 +14,3 @@ export const cards: Card[] = [
   { id: "lordknight", name: "Lord Knight Seyren Card", slot: "Headgear", effect: "Small chance to auto-cast Coma on hit.", source: "Lord Knight Seyren" },
 ];
 
-export function getCard(id: string) {
-  return cards.find((c) => c.id === id);
-}

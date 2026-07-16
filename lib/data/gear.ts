@@ -18,6 +18,3 @@ export const gear: Gear[] = [
   { id: "brooch", name: "Mage Brooch", slot: "Accessory", stats: "MATK +12, INT +2" },
 ];
 
-export function getGear(id: string) {
-  return gear.find((g) => g.id === id);
-}

@@ -58,7 +58,3 @@ export const playerGuide: PlayerGuideSection[] = [
       "ROW's F2P QoL is better than classic RO: offline farming, free resets, and safe refine to +15 all lower the mandatory spend floor. Top-end Guild Wars / competitive PvP is where the gear gap shows — Starstone spending speeds up late-game refinement. F2P players reach the same power, just slower. Don't over-invest in PvP gear before the Druid meta stabilizes.",
   },
 ];
-
-export function getGuideSection(id: string) {
-  return playerGuide.find((s) => s.id === id);
-}

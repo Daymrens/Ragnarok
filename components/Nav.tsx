@@ -23,6 +23,7 @@ const more = [
   { href: "/planner", label: "Class Planner" },
   { href: "/database/pets", label: "Pets & Mounts" },
   { href: "/guide/player", label: "Player Guide" },
+  { href: "/about", label: "About & FAQ" },
 ];
 
 function Crest() {

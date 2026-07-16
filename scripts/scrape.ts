@@ -37,7 +37,8 @@ async function main() {
   await dump("events", scrapeEvents());
 
   console.log(
-    "\nNote: generated files are best-effort. Review and merge into lib/data/*.ts manually."
+    "\nNote: generated files are best-effort. Use mergeMonsters(curated, generated) from" +
+      " lib/data/merge.ts to append non-duplicate rows, then review before committing."
   );
 }
 
