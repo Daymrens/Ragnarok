@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono, Cinzel } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
+
+export const metadata: Metadata = {
+  title: "RagnaSys — Ragnarok: The New World Companion",
+  description:
+    "Companion tools for Ragnarok: The New World: class database, MVP timers, build calculator, and class guides.",
+  manifest: "/manifest.json",
+};
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,12 +26,6 @@ const cinzel = Cinzel({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
 });
-
-export const metadata: Metadata = {
-  title: "RagnaSys — Ragnarok: The New World Companion",
-  description:
-    "Companion tools for Ragnarok: The New World: class database, MVP timers, build calculator, and class guides.",
-};
 
 export default function RootLayout({
   children,
@@ -44,6 +46,13 @@ export default function RootLayout({
             community-sourced and may be inaccurate — verify in-game.
           </p>
         </footer>
+        <Script id="sw-register" strategy="afterInteractive">
+          {`if ('serviceWorker' in navigator && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  });
+}`}
+        </Script>
       </body>
     </html>
   );
