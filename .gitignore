@@ -42,3 +42,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# RoworldDB / wiki generated data (regenerate via npm run ingest-roworlddb / npm run scrape)
+lib/data/generated/roworlddb_*.json
+lib/data/generated/*.json

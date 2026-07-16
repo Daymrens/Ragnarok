@@ -1,23 +1,24 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { gear } from "@/lib/data/gear";
-import { Card, ListHeader } from "@/components/ui";
+import Link from "next/link";
+import type { Gear } from "@/lib/data/types";
+import { Card, ListHeader, SourceBadge } from "@/components/ui";
 
 const SLOTS = ["All", "Weapon", "Armor", "Garment", "Footgear", "Shield", "Headgear", "Accessory"];
 
-export function GearList() {
+export function GearList({ data }: { data: Gear[] }) {
   const [q, setQ] = useState("");
-  const [slot, setSlot] = useState("All");
+  const [slot, setSlot] = useState<string>("All");
 
   const filtered = useMemo(() => {
-    return gear.filter((g) => {
+    return data.filter((g) => {
       if (slot !== "All" && g.slot !== slot) return false;
       if (q && !g.name.toLowerCase().includes(q.toLowerCase()) && !g.stats.toLowerCase().includes(q.toLowerCase()))
         return false;
       return true;
     });
-  }, [q, slot]);
+  }, [q, slot, data]);
 
   return (
     <div className="space-y-6">
@@ -48,16 +49,23 @@ export function GearList() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         {filtered.map((g) => (
-          <Card key={g.id}>
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-gold-soft">{g.name}</h2>
-              <span className="text-xs text-foreground/50">{g.slot}</span>
-            </div>
-            <p className="text-sm text-foreground/75 mt-2">{g.stats}</p>
-            {g.refineNote && (
-              <p className="text-xs text-foreground/50 mt-1">{g.refineNote}</p>
-            )}
-          </Card>
+          <Link key={g.id} href={`/database/gear/${g.id}`} className="block">
+            <Card className="hover:border-gold transition-colors h-full">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="font-semibold text-gold-soft truncate">{g.name}</h2>
+                <span className="text-xs text-foreground/50 shrink-0">{g.slot}</span>
+              </div>
+              <p className="text-sm text-foreground/75 mt-2">{g.stats}</p>
+              <div className="mt-2 flex items-center justify-between gap-2">
+                {g.refineNote ? (
+                  <p className="text-xs text-foreground/50">{g.refineNote}</p>
+                ) : (
+                  <span />
+                )}
+                <SourceBadge id={g.id} />
+              </div>
+            </Card>
+          </Link>
         ))}
         {filtered.length === 0 && (
           <p className="text-sm text-foreground/50">No gear matches your filters.</p>

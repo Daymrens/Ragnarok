@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Card, ElementBadge } from "@/components/ui";
 import { MonsterPortrait } from "@/components/MonsterPortrait";
 import { getMonster } from "@/lib/data/monsters";
+import { getMergedMonster } from "@/lib/data/roworlddb";
 import { elementMultiplier, ELEMENTS } from "@/lib/data/elements";
 
 export default async function MonsterDetailPage({
@@ -11,7 +12,7 @@ export default async function MonsterDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const m = getMonster(id);
+  const m = getMergedMonster(id) ?? getMonster(id);
   if (!m) notFound();
 
   const strong = ELEMENTS.filter((e) => elementMultiplier(e, m.element) > 1).slice(0, 3);

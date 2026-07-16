@@ -193,3 +193,19 @@ export function ElementBadge({ element }: { element: string }) {
     </span>
   );
 }
+
+/** Compact label for where a piece of reference data originated. */
+export function dataSource(id: string): "RoworldDB" | "Curated" {
+  return id.startsWith("rw_") ? "RoworldDB" : "Curated";
+}
+
+export function SourceBadge({ id }: { id: string }) {
+  const src = dataSource(id);
+  const tone: keyof typeof chipColor =
+    src === "RoworldDB" ? "sky" : "neutral";
+  return (
+    <Chip tone={tone} className="font-mono">
+      {src}
+    </Chip>
+  );
+}

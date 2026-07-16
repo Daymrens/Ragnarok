@@ -2,25 +2,25 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { monsters } from "@/lib/data/monsters";
+import type { Monster } from "@/lib/data/types";
 import { ELEMENTS } from "@/lib/data/elements";
-import { Card, ElementBadge, ListHeader } from "@/components/ui";
+import { Card, ElementBadge, ListHeader, SourceBadge } from "@/components/ui";
 import { MonsterPortrait } from "@/components/MonsterPortrait";
 
-export function MonsterList() {
+export function MonsterList({ data }: { data: Monster[] }) {
   const [q, setQ] = useState("");
   const [el, setEl] = useState<string>("all");
   const [mvpOnly, setMvpOnly] = useState(false);
 
   const filtered = useMemo(() => {
-    return monsters.filter((m) => {
+    return data.filter((m) => {
       if (mvpOnly && !m.isMvp) return false;
       if (el !== "all" && m.element !== el) return false;
       if (q && !m.name.toLowerCase().includes(q.toLowerCase()) && !m.region.toLowerCase().includes(q.toLowerCase()))
         return false;
       return true;
     });
-  }, [q, el, mvpOnly]);
+  }, [q, el, mvpOnly, data]);
 
   return (
     <div className="space-y-6">
@@ -76,7 +76,10 @@ export function MonsterList() {
                     <h2 className="font-semibold text-gold-soft truncate">
                       {m.name} {m.isMvp && <span className="text-crimson text-xs">MVP</span>}
                     </h2>
-                    <ElementBadge element={m.element} />
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <SourceBadge id={m.id} />
+                      <ElementBadge element={m.element} />
+                    </div>
                   </div>
                   <p className="text-xs text-foreground/60 mt-1">
                     Lv {m.level} · {m.race} · {m.size} · {m.region}
