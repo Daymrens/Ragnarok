@@ -16,6 +16,7 @@ import { estimateDamage } from "@/lib/damageCalc";
 import { ELEMENTS } from "@/lib/data/elements";
 import { encodeBuild, decodeBuild } from "@/lib/buildEncode";
 import type { BuildState } from "@/lib/data/types";
+import { ScreenshotImport } from "@/components/ScreenshotImport";
 import { ListHeader } from "@/components/ui";
 
 const SLOTS: GearSlot[] = [
@@ -134,6 +135,22 @@ export function BuildCalculator() {
     setElement(s.element ?? "Neutral");
     setTargetElement(s.targetElement ?? "Neutral");
     setTargetDef(s.targetDef ?? 0);
+  }
+
+  function applyScreenshot(stats: {
+    str: number;
+    agi: number;
+    vit: number;
+    int: number;
+    dex: number;
+    luk: number;
+  }) {
+    setStr(stats.str);
+    setAgi(stats.agi);
+    setVit(stats.vit);
+    setInt(stats.int);
+    setDex(stats.dex);
+    setLuk(stats.luk);
   }
 
   // Note: ?b= share links are read once via the lazy initializer above.
@@ -472,6 +489,16 @@ export function BuildCalculator() {
             </div>
           )}
         </div>
+      </section>
+
+      {/* Screenshot importer */}
+      <section className="card-modern p-4 space-y-3">
+        <h2 className="font-semibold text-gold-soft">Import from Screenshot</h2>
+        <p className="text-xs text-foreground/65">
+          Upload or paste a screenshot of your stat screen. OCR runs entirely in your browser —
+          review and correct the values before applying.
+        </p>
+        <ScreenshotImport onApply={applyScreenshot} />
       </section>
 
       {/* Saved builds */}
