@@ -17,6 +17,8 @@ const more = [
   { href: "/strategy", label: "Strategy" },
   { href: "/crafting", label: "Crafting" },
   { href: "/map", label: "Chest Map" },
+  { href: "/leveling", label: "Leveling" },
+  { href: "/database/pets", label: "Pets & Mounts" },
   { href: "/guide/player", label: "Player Guide" },
 ];
 

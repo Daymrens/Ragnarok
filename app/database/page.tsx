@@ -5,6 +5,7 @@ import { mvps } from "@/lib/data/mvps";
 import { monsters } from "@/lib/data/monsters";
 import { cards } from "@/lib/data/cards";
 import { gear } from "@/lib/data/gear";
+import { pets } from "@/lib/data/pets";
 import { getActiveCodes } from "@/lib/data/codes";
 
 const items = [
@@ -13,6 +14,7 @@ const items = [
   { href: "/database/mvps", title: "MVPs", sub: `${mvps.length} boss entries` },
   { href: "/database/cards", title: "Cards", sub: `${cards.length} equipment cards` },
   { href: "/database/gear", title: "Gear", sub: `${gear.length} equipment pieces` },
+  { href: "/database/pets", title: "Pets & Mounts", sub: `${pets.length} tames & mounts` },
   { href: "/database/codes", title: "Redeem Codes", sub: `${getActiveCodes().length} active codes` },
 ];
 
@@ -22,7 +24,7 @@ export default function DatabasePage() {
       <div>
         <SectionTitle>Database</SectionTitle>
         <p className="text-foreground/70 text-sm mt-1">
-          Reference for classes, monsters, MVPs, cards, gear, and redeem codes.
+          Reference for classes, monsters, MVPs, cards, gear, pets, and redeem codes.
         </p>
       </div>
 

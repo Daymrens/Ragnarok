@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { classes } from "@/lib/data/classes";
+import { gear } from "@/lib/data/gear";
+import type { GearSlot } from "@/lib/data/types";
 import {
   calculateAspd,
   aspdLabel,
@@ -9,6 +11,26 @@ import {
   type AspdInput,
 } from "@/lib/calc/aspd";
 import { calculateRefine, REFINE_MAX } from "@/lib/calc/refine";
+
+const SLOTS: GearSlot[] = [
+  "Weapon",
+  "Armor",
+  "Garment",
+  "Footgear",
+  "Shield",
+  "Headgear",
+  "Accessory",
+];
+
+// Parse "ATK +85, STR +3" into { ATK: 85, STR: 3 }
+function parseStats(stats: string): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const part of stats.split(",")) {
+    const m = part.trim().match(/^([A-Za-z ]+?)\s*\+(\d+)$/);
+    if (m) out[m[1].trim()] = Number(m[2]);
+  }
+  return out;
+}
 
 interface SavedBuild {
   id: string;
@@ -46,6 +68,28 @@ export function BuildCalculator() {
   const [builds, setBuilds] = useState<SavedBuild[]>(() =>
     typeof window !== "undefined" ? loadBuilds() : []
   );
+
+  // Gear Set Builder: one gear id per slot
+  const [loadout, setLoadout] = useState<Record<GearSlot, string>>(() => {
+    const init = {} as Record<GearSlot, string>;
+    for (const s of SLOTS) init[s] = "";
+    return init;
+  });
+
+  const setTotals = useMemo(() => {
+    const totals: Record<string, number> = {};
+    for (const slot of SLOTS) {
+      const id = loadout[slot];
+      if (!id) continue;
+      const g = gear.find((x) => x.id === id);
+      if (!g) continue;
+      const parsed = parseStats(g.stats);
+      for (const [k, v] of Object.entries(parsed)) {
+        totals[k] = (totals[k] ?? 0) + v;
+      }
+    }
+    return totals;
+  }, [loadout]);
 
   const aspd = useMemo(
     () => calculateAspd({ baseAspd, agi, dex, buffs }),
@@ -173,6 +217,52 @@ export function BuildCalculator() {
           </div>
         </section>
       </div>
+
+      {/* Gear Set Builder */}
+      <section className="rounded-xl border border-panel-2 bg-panel p-4 space-y-4">
+        <h2 className="font-semibold text-gold-soft">Gear Set Builder</h2>
+        <p className="text-xs text-foreground/65">
+          Pick one piece per slot to preview summed stats. Safe refine to +15 never breaks gear.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {SLOTS.map((slot) => (
+            <label key={slot} className="block text-sm">
+              <span className="text-foreground/70">{slot}</span>
+              <select
+                value={loadout[slot]}
+                onChange={(e) => setLoadout({ ...loadout, [slot]: e.target.value })}
+                className="mt-1 w-full rounded-md bg-panel-2 border border-panel-2 px-2 py-1.5"
+              >
+                <option value="">— none —</option>
+                {gear
+                  .filter((g) => g.slot === slot)
+                  .map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+          ))}
+        </div>
+        <div>
+          <p className="text-sm text-foreground/70 mb-1">Summed stats</p>
+          {Object.keys(setTotals).length === 0 ? (
+            <p className="text-sm text-foreground/50">No gear selected.</p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(setTotals).map(([k, v]) => (
+                <span
+                  key={k}
+                  className="rounded-md bg-ocean/50 border border-sky/30 px-2 py-1 text-sm font-mono"
+                >
+                  {k} +{v}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Saved builds */}
       <section className="rounded-xl border border-panel-2 bg-panel p-4 space-y-3">

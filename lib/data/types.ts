@@ -164,6 +164,12 @@ export interface MVP {
   /** true if the window is an estimate pending verification */
   estimate?: boolean;
   notes?: string;
+  /** optional portrait url (local /public or remote). falls back to a generated sigil */
+  image?: string;
+  /** short flavor/role line shown on the detail page */
+  role?: string;
+  /** recommended party composition notes */
+  party?: string;
 }
 
 export interface RedeemCode {
@@ -180,4 +186,26 @@ export interface Build {
   stats: Record<string, number>;
   skills: string[];
   notes?: string;
+}
+
+export type PetType = "Pet" | "Mount";
+export type CaptureMethod =
+  | "Taming item"
+  | "Event egg"
+  | "Login calendar"
+  | "MVP tame"
+  | "Shop";
+
+export interface Pet {
+  id: string;
+  name: string;
+  type: PetType;
+  source: string; // monster / event / shop name
+  capture: CaptureMethod;
+  bonus: string; // passive stat / effect summary
+  size: "Small" | "Medium" | "Large";
+  notes?: string;
+  estimate?: boolean;
+  /** optional portrait url (local /public or remote). falls back to a generated sigil */
+  image?: string;
 }
