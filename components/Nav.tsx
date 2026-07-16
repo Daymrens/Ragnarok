@@ -110,7 +110,7 @@ export function Nav() {
               />
               <ul
                 role="menu"
-                className="card-modern absolute right-0 mt-2 z-50 w-52 max-w-[calc(100vw-2rem)] rounded-xl p-1.5 max-h-[70vh] overflow-y-auto origin-top-right"
+                className="card-modern absolute right-0 top-full mt-2 z-50 w-52 max-w-[calc(100vw-2rem)] rounded-xl p-1.5 max-h-[70vh] overflow-y-auto origin-top-right"
               >
                 {more.map((m) => (
                   <li key={m.href} role="none">
