@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { Card } from "@/components/ui";
+import { LiveCodeBadge } from "@/components/LiveCodeBadge";
 import { classes } from "@/lib/data/classes";
-import { getActiveCodes } from "@/lib/data/codes";
 import { monsters } from "@/lib/data/monsters";
 
 export default function HomePage() {
-  const activeCodes = getActiveCodes();
   return (
     <div className="space-y-10">
       <section className="relative text-center py-12 sm:py-16">
@@ -53,7 +52,9 @@ export default function HomePage() {
         </Link>
         <Link href="/database/codes">
           <Card className="hover:border-gold/60 transition-colors h-full text-center">
-            <p className="font-display text-4xl font-bold text-ember">{activeCodes.length}</p>
+            <p className="font-display text-4xl font-bold text-ember">
+              <LiveCodeBadge fallback={8} />
+            </p>
             <p className="text-sm text-foreground/70 mt-1">Active codes</p>
           </Card>
         </Link>
