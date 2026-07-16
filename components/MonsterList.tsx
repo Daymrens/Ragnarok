@@ -5,6 +5,7 @@ import Link from "next/link";
 import { monsters } from "@/lib/data/monsters";
 import { ELEMENTS } from "@/lib/data/elements";
 import { Card, ElementBadge } from "@/components/ui";
+import { MonsterPortrait } from "@/components/MonsterPortrait";
 
 export function MonsterList() {
   const [q, setQ] = useState("");
@@ -64,16 +65,27 @@ export function MonsterList() {
         {filtered.map((m) => (
           <Link key={m.id} href={`/database/monsters/${m.id}`}>
             <Card className="hover:border-gold transition-colors h-full">
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-gold-soft">
-                  {m.name} {m.isMvp && <span className="text-crimson text-xs">MVP</span>}
-                </h2>
-                <ElementBadge element={m.element} />
+              <div className="flex gap-3">
+                <MonsterPortrait
+                  name={m.name}
+                  element={m.element}
+                  race={m.race}
+                  image={m.image}
+                  size={56}
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <h2 className="font-semibold text-gold-soft truncate">
+                      {m.name} {m.isMvp && <span className="text-crimson text-xs">MVP</span>}
+                    </h2>
+                    <ElementBadge element={m.element} />
+                  </div>
+                  <p className="text-xs text-foreground/60 mt-1">
+                    Lv {m.level} · {m.race} · {m.size} · {m.region}
+                  </p>
+                  {m.estimate && <p className="text-xs text-crimson/80 mt-1">est. data</p>}
+                </div>
               </div>
-              <p className="text-xs text-foreground/60 mt-1">
-                Lv {m.level} · {m.race} · {m.size} · {m.region}
-              </p>
-              {m.estimate && <p className="text-xs text-crimson/80 mt-1">est. data</p>}
             </Card>
           </Link>
         ))}

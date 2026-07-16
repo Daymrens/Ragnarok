@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card, ElementBadge } from "@/components/ui";
+import { MonsterPortrait } from "@/components/MonsterPortrait";
 import { getMonster } from "@/lib/data/monsters";
 import { elementMultiplier, ELEMENTS } from "@/lib/data/elements";
 
@@ -22,11 +23,23 @@ export default async function MonsterDetailPage({
         &larr; Bestiary
       </Link>
 
-      <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-bold text-gold">
-          {m.name} {m.isMvp && <span className="text-crimson text-sm">MVP</span>}
-        </h1>
-        <ElementBadge element={m.element} />
+      <div className="flex items-center gap-4">
+        <MonsterPortrait
+          name={m.name}
+          element={m.element}
+          race={m.race}
+          image={m.image}
+          size={88}
+          className="shadow-md"
+        />
+        <div>
+          <h1 className="text-2xl font-bold text-gold">
+            {m.name} {m.isMvp && <span className="text-crimson text-sm">MVP</span>}
+          </h1>
+          <div className="mt-2">
+            <ElementBadge element={m.element} />
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">

@@ -79,6 +79,8 @@ export interface Monster {
   drops: string[];
   isMvp?: boolean;
   estimate?: boolean;
+  /** optional portrait url (local /public or remote). falls back to a generated sigil */
+  image?: string;
 }
 
 export interface Card {
