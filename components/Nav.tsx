@@ -81,10 +81,18 @@ export function Nav() {
             </li>
           ))}
         </ul>
-        <div className="relative ml-auto shrink-0">
+        <div
+          className="relative ml-auto shrink-0"
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
           <button
             onClick={() => setOpen((o) => !o)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setOpen(false);
+            }}
             aria-expanded={open}
+            aria-haspopup="menu"
             className={`px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-all ${
               more.some((m) => isActive(m.href))
                 ? "bg-gradient-to-b from-gold-soft/30 to-gold/10 text-gold-deep font-semibold shadow-[inset_0_0_0_1px_rgba(170,112,51,0.4)]"
@@ -100,11 +108,15 @@ export function Nav() {
                 onClick={() => setOpen(false)}
                 aria-hidden
               />
-              <ul className="card-modern absolute right-0 mt-2 z-50 w-52 rounded-xl p-1.5 max-h-[70vh] overflow-y-auto">
+              <ul
+                role="menu"
+                className="card-modern absolute right-0 mt-2 z-50 w-52 max-w-[calc(100vw-2rem)] rounded-xl p-1.5 max-h-[70vh] overflow-y-auto origin-top-right"
+              >
                 {more.map((m) => (
-                  <li key={m.href}>
+                  <li key={m.href} role="none">
                     <Link
                       href={m.href}
+                      role="menuitem"
                       onClick={() => setOpen(false)}
                       className={`block px-3 py-2 text-sm rounded-lg transition-colors ${
                         isActive(m.href)
