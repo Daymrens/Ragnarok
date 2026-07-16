@@ -108,9 +108,13 @@ export function getMergedMonsters(): Monster[] {
   });
 
   const have = new Set(curatedMonsters.map((m) => normName(m.name)));
-  const extras: Monster[] = data.monsters
-    .filter((m) => m.name && !have.has(normName(m.name)))
-    .map((m) => ({
+  const seen = new Set<string>();
+  const extras: Monster[] = [];
+  for (const m of data.monsters) {
+    const key = normName(m.name);
+    if (!m.name || have.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    extras.push({
       id: `rw_${m.id}`,
       name: m.name,
       region: "Unknown",
@@ -123,7 +127,8 @@ export function getMergedMonsters(): Monster[] {
       isMvp: m.isMvp || undefined,
       estimate: true,
       image: m.image || undefined,
-    }));
+    });
+  }
   return [...enriched, ...extras];
 }
 
@@ -158,16 +163,21 @@ export function getMergedGear(): Gear[] {
   });
 
   const have = new Set(curatedGear.map((g) => normName(g.name)));
-  const extras: Gear[] = data.items
-    .filter((g) => g.name && !have.has(normName(g.name)))
-    .map((g) => ({
+  const seen = new Set<string>();
+  const extras: Gear[] = [];
+  for (const g of data.items) {
+    const key = normName(g.name);
+    if (!g.name || have.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    extras.push({
       id: `rw_${g.id}`,
       name: g.name,
       slot: GEAR_SLOT_BY_TYPE[String(g.itemType)] ?? "Accessory",
       stats: g.stats.map((s) => `${s.attr} +${s.value}`).join(", "),
       refineNote: "Safe refine to +15.",
       image: g.image || undefined,
-    }));
+    });
+  }
   return [...enriched, ...extras];
 }
 
@@ -176,14 +186,19 @@ export function getMergedCards(): Card[] {
   const data = loadGenerated<{ cards: RwCard[] }>("roworlddb_cards.json");
   if (!data?.cards?.length) return curatedCards;
   const have = new Set(curatedCards.map((c) => normName(c.name)));
-  const extras: Card[] = data.cards
-    .filter((c) => c.name && !have.has(normName(c.name)))
-    .map((c) => ({
+  const seen = new Set<string>();
+  const extras: Card[] = [];
+  for (const c of data.cards) {
+    const key = normName(c.name);
+    if (!c.name || have.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    extras.push({
       id: `rw_${c.id}`,
       name: c.name,
       slot: (cap(c.slot) as CardSlot) ?? "Accessory",
       effect: c.effect,
       source: "",
-    }));
+    });
+  }
   return [...curatedCards, ...extras];
 }
