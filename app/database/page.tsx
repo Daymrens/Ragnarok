@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, SectionTitle } from "@/components/ui";
+import { Card, PageHeader } from "@/components/ui";
 import { classes } from "@/lib/data/classes";
 import { mvps } from "@/lib/data/mvps";
 import { monsters } from "@/lib/data/monsters";
@@ -24,18 +24,17 @@ const items = [
 export default function DatabasePage() {
   return (
     <div className="space-y-6">
-      <div>
-        <SectionTitle>Database</SectionTitle>
-        <p className="text-foreground/70 text-sm mt-1">
-          Reference for classes, monsters, MVPs, cards, gear, pets, and redeem codes.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Reference"
+        title="Database"
+        description="Reference for classes, monsters, MVPs, cards, gear, pets, and redeem codes."
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((it) => (
           <Link key={it.href} href={it.href}>
-            <Card className="hover:border-gold transition-colors h-full">
-              <h2 className="text-lg font-semibold text-gold-soft">{it.title}</h2>
+            <Card className="hover-lift h-full">
+              <h2 className="text-lg font-semibold text-gold-deep">{it.title}</h2>
               <p className="text-foreground/70 text-sm mt-1">{it.sub}</p>
             </Card>
           </Link>

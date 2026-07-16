@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getActiveEvents } from "@/lib/data/events";
+import { ListHeader } from "@/components/ui";
 
 const RESET_HOUR = 5; // server reset 5:00 AM
 const CHECK_KEY = "ragnasys.daily.checklist";
@@ -60,12 +61,10 @@ export function DailyTracker() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gold">Daily & Events</h1>
-        <p className="text-foreground/70 text-sm mt-1">
-          Server reset at 5:00 AM. Track your daily routine and active launch events.
-        </p>
-      </div>
+      <ListHeader
+        title="Daily & Events"
+        description="Server reset at 5:00 AM. Track your daily routine and active launch events."
+      />
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-xl border border-panel-2 bg-panel p-4">

@@ -11,6 +11,7 @@ import {
   type AspdInput,
 } from "@/lib/calc/aspd";
 import { calculateRefine, REFINE_MAX } from "@/lib/calc/refine";
+import { ListHeader } from "@/components/ui";
 
 const SLOTS: GearSlot[] = [
   "Weapon",
@@ -130,12 +131,10 @@ export function BuildCalculator() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gold">Build Calculator</h1>
-        <p className="text-foreground/70 text-sm mt-1">
-          Estimate ASPD toward the 193 cap, plan safe-refine costs, and save builds.
-        </p>
-      </div>
+      <ListHeader
+        title="Build Calculator"
+        description="Estimate ASPD toward the 193 cap, plan safe-refine costs, and save builds."
+      />
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* ASPD */}

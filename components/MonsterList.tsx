@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { monsters } from "@/lib/data/monsters";
 import { ELEMENTS } from "@/lib/data/elements";
-import { Card, ElementBadge } from "@/components/ui";
+import { Card, ElementBadge, ListHeader } from "@/components/ui";
 import { MonsterPortrait } from "@/components/MonsterPortrait";
 
 export function MonsterList() {
@@ -24,19 +24,17 @@ export function MonsterList() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gold">Monster Bestiary</h1>
-        <p className="text-foreground/70 text-sm mt-1">
-          Field mobs and MVPs with element, race, and drops. HP/levels are estimates until verified.
-        </p>
-      </div>
+      <ListHeader
+        title="Monster Bestiary"
+        description="Field mobs and MVPs with element, race, and drops. HP/levels are estimates until verified."
+      />
 
       <div className="flex flex-wrap gap-2 items-center">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search name or region..."
-          className="rounded-md bg-panel-2 border border-panel-2 px-3 py-1.5 text-sm flex-1 min-w-[180px]"
+          className="input-field rounded-md px-3 py-1.5 text-sm flex-1 min-w-[180px]"
         />
         <select
           value={el}

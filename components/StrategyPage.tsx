@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ELEMENTS, elementMultiplier, multiplierLabel } from "@/lib/data/elements";
+import { ListHeader } from "@/components/ui";
 
 function cellColor(m: number): string {
   if (m >= 1.75) return "bg-crimson/80 text-white";
@@ -18,12 +19,10 @@ export function StrategyPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gold">Strategy & Combat</h1>
-        <p className="text-foreground/70 text-sm mt-1">
-          Elemental matchups, card combos, and PvP/Guild War notes.
-        </p>
-      </div>
+      <ListHeader
+        title="Strategy & Combat"
+        description="Elemental matchups, card combos, and PvP/Guild War notes."
+      />
 
       <section className="rounded-xl border border-panel-2 bg-panel p-4">
         <h2 className="font-semibold text-gold-soft mb-1">Elemental Matchup Chart</h2>

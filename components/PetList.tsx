@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { pets } from "@/lib/data/pets";
-import { Card } from "@/components/ui";
+import { Card, ListHeader } from "@/components/ui";
 
 const TYPES = ["all", "Pet", "Mount"] as const;
 
@@ -21,19 +21,17 @@ export function PetList() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gold">Pets & Mounts</h1>
-        <p className="text-foreground/70 text-sm mt-1">
-          Tames, MVP mounts, and their passive bonuses. Methods are estimates until verified.
-        </p>
-      </div>
+      <ListHeader
+        title="Pets & Mounts"
+        description="Tames, MVP mounts, and their passive bonuses. Methods are estimates until verified."
+      />
 
       <div className="flex flex-wrap gap-2 items-center">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search name or source..."
-          className="rounded-md bg-panel-2 border border-panel-2 px-3 py-1.5 text-sm flex-1 min-w-[180px]"
+          className="input-field rounded-md px-3 py-1.5 text-sm flex-1 min-w-[180px]"
         />
         <select
           value={type}

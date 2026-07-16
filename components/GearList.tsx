@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { gear } from "@/lib/data/gear";
-import { Card } from "@/components/ui";
+import { Card, ListHeader } from "@/components/ui";
 
 const SLOTS = ["All", "Weapon", "Armor", "Garment", "Footgear", "Shield", "Headgear", "Accessory"];
 
@@ -21,19 +21,17 @@ export function GearList() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gold">Gear</h1>
-        <p className="text-foreground/70 text-sm mt-1">
-          Representative equipment. Safe refine to +15 on most pieces.
-        </p>
-      </div>
+      <ListHeader
+        title="Gear"
+        description="Representative equipment. Safe refine to +15 on most pieces."
+      />
 
       <div className="flex flex-wrap gap-2 items-center">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search gear or stats..."
-          className="rounded-md bg-panel-2 border border-panel-2 px-3 py-1.5 text-sm flex-1 min-w-[180px]"
+          className="input-field rounded-md px-3 py-1.5 text-sm flex-1 min-w-[180px]"
         />
         <select
           value={slot}

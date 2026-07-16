@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { chests, chestRegions } from "@/lib/data/chests";
-import { Card } from "@/components/ui";
+import { Card, ListHeader } from "@/components/ui";
 
 const FOUND_KEY = "ragnasys.chests.found";
 const TYPE_LABEL: Record<string, string> = {
@@ -34,13 +34,15 @@ export function ChestMap() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gold">Chest & Exploration Map</h1>
-        <p className="text-foreground/70 text-sm mt-1">
-          Track hidden chests, treasure maps, and viewpoints. {foundCount}/{chests.length} found.
-          Exact coordinates are community-sourced — verify in-game.
-        </p>
-      </div>
+      <ListHeader
+        title="Chest & Exploration Map"
+        description={
+          <>
+            Track hidden chests, treasure maps, and viewpoints. {foundCount}/{chests.length} found.
+            Exact coordinates are community-sourced — verify in-game.
+          </>
+        }
+      />
 
       <div className="flex flex-wrap gap-2">
         <button

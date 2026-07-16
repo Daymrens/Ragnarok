@@ -55,7 +55,7 @@ export function GlobalSearch() {
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="Search…"
-        className="rounded-md bg-panel-2 border border-panel-2 px-2 py-1.5 text-sm w-32 focus:w-48 transition-all"
+        className="input-field rounded-md px-3 py-1.5 text-sm w-32 focus:w-52"
       />
       {results.length > 0 && (
         <ul className="surface absolute right-0 mt-1 z-50 w-72 rounded-lg p-1 max-h-80 overflow-auto">

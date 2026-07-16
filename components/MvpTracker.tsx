@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { mvps } from "@/lib/data/mvps";
+import { ListHeader } from "@/components/ui";
 
 interface KillRecord {
   killedAt: number; // epoch ms
@@ -119,13 +120,10 @@ export function MvpTracker() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-gold">MVP Timer</h1>
-          <p className="text-foreground/70 text-sm mt-1">
-            Mark an MVP as killed to start its respawn countdown. Times are estimates until
-            verified in-game.
-          </p>
-        </div>
+        <ListHeader
+          title="MVP Timer"
+          description="Mark an MVP as killed to start its respawn countdown. Times are estimates until verified in-game."
+        />
         <div className="flex items-center gap-2">
           {!alarmOn ? (
             <button

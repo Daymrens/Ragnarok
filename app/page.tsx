@@ -1,8 +1,23 @@
 import Link from "next/link";
-import { Card } from "@/components/ui";
+import { Card, Stat, PageHeader, Chip } from "@/components/ui";
 import { LiveCodeBadge } from "@/components/LiveCodeBadge";
 import { classes } from "@/lib/data/classes";
 import { monsters } from "@/lib/data/monsters";
+
+const tools = [
+  { href: "/mvp", title: "MVP Timer", desc: "Track boss respawn windows.", tone: "crimson" as const },
+  { href: "/builder", title: "Build Calculator", desc: "Stats, gear & refine planning.", tone: "gold" as const },
+  { href: "/guide", title: "Class Guides", desc: "Roles, skills & leveling.", tone: "sky" as const },
+  { href: "/daily", title: "Daily & Events", desc: "Optimize your routine.", tone: "sage" as const },
+  { href: "/crafting", title: "Crafting", desc: "Life skills & refinement.", tone: "violet" as const },
+  { href: "/map", title: "Chest Map", desc: "Exploration & treasures.", tone: "gold" as const },
+  { href: "/planner", title: "Class Planner", desc: "Compare all 8 classes.", tone: "sky" as const },
+  { href: "/world", title: "World Regions", desc: "Monsters by region.", tone: "sage" as const },
+  { href: "/leveling", title: "Leveling", desc: "Best zones by level.", tone: "violet" as const },
+  { href: "/strategy", title: "Strategy", desc: "Elements & matchups.", tone: "crimson" as const },
+  { href: "/database/pets", title: "Pets & Mounts", desc: "Tames & rides.", tone: "gold" as const },
+  { href: "/database/codes", title: "Redeem Codes", desc: "Live active codes.", tone: "sage" as const },
+];
 
 export default function HomePage() {
   return (
@@ -31,39 +46,41 @@ export default function HomePage() {
           <Link href="/builder" className="btn-ghost px-5 py-2.5 rounded-md font-semibold">
             Build Calculator
           </Link>
-          <Link href="/map" className="btn-ghost px-5 py-2.5 rounded-md font-semibold">
-            Chest Map
-          </Link>
         </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Link href="/database/classes">
-          <Card className="hover:border-gold/60 transition-colors h-full text-center">
-            <p className="font-display text-4xl font-bold text-ember">{classes.length}</p>
-            <p className="text-sm text-foreground/70 mt-1">Classes</p>
-          </Card>
+          <Stat value={classes.length} label="Classes" />
         </Link>
         <Link href="/database/monsters">
-          <Card className="hover:border-gold/60 transition-colors h-full text-center">
-            <p className="font-display text-4xl font-bold text-ember">{monsters.length}</p>
-            <p className="text-sm text-foreground/70 mt-1">Monsters</p>
-          </Card>
+          <Stat value={monsters.length} label="Monsters" />
         </Link>
         <Link href="/database/codes">
-          <Card className="hover:border-gold/60 transition-colors h-full text-center">
-            <p className="font-display text-4xl font-bold text-ember">
-              <LiveCodeBadge fallback={8} />
-            </p>
-            <p className="text-sm text-foreground/70 mt-1">Active codes</p>
-          </Card>
+          <Stat value={<LiveCodeBadge fallback={8} />} label="Active codes" />
         </Link>
         <Link href="/builder">
-          <Card className="hover:border-gold/60 transition-colors h-full text-center">
-            <p className="font-display text-4xl font-bold text-ember">193</p>
-            <p className="text-sm text-foreground/70 mt-1">ASPD cap</p>
-          </Card>
+          <Stat value={193} label="ASPD cap" />
         </Link>
+      </section>
+
+      <section>
+        <PageHeader eyebrow="Tools" title="Everything in one place" />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {tools.map((t) => (
+            <Link key={t.href} href={t.href}>
+              <Card className="h-full hover-lift">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-display text-lg font-semibold text-gold-deep">
+                    {t.title}
+                  </h3>
+                  <Chip tone={t.tone}>open</Chip>
+                </div>
+                <p className="text-sm text-foreground/70 mt-1">{t.desc}</p>
+              </Card>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="text-center text-sm text-foreground/50">

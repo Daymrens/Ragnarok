@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { cards } from "@/lib/data/cards";
-import { Card } from "@/components/ui";
+import { Card, ListHeader } from "@/components/ui";
 
 const SLOTS = ["All", "Weapon", "Armor", "Garment", "Footgear", "Shield", "Headgear", "Accessory"];
 
@@ -21,19 +21,17 @@ export function CardList() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gold">Cards</h1>
-        <p className="text-foreground/70 text-sm mt-1">
-          Equipment cards and their effects. Source links to the monster that drops them.
-        </p>
-      </div>
+      <ListHeader
+        title="Cards"
+        description="Equipment cards and their effects. Source links to the monster that drops them."
+      />
 
       <div className="flex flex-wrap gap-2 items-center">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search card or effect..."
-          className="rounded-md bg-panel-2 border border-panel-2 px-3 py-1.5 text-sm flex-1 min-w-[180px]"
+          className="input-field rounded-md px-3 py-1.5 text-sm flex-1 min-w-[180px]"
         />
         <select
           value={slot}
