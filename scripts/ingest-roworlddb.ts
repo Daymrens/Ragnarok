@@ -17,6 +17,16 @@ import { writeFile, mkdir } from "node:fs/promises";
 
 const LOCALE = "en-US";
 const BASE = "https://roworlddb.com/sea";
+const IMG_BASE = "https://roworlddb.com/media/images";
+
+// RoworldDB icon strings are filenames under /media/images; the monster album
+// prefixes them with "monster/", equipment/cards with "item/". WebP extension.
+function monsterImg(icon: string): string {
+  return icon ? `${IMG_BASE}/monster/${icon}.webp` : "";
+}
+function itemImg(icon: string): string {
+  return icon ? `${IMG_BASE}/item/${icon}.webp` : "";
+}
 
 const SOURCES = {
   equipment: `${BASE}/equipment/data/equipment_${LOCALE}.json`,
@@ -66,6 +76,7 @@ function normalizeEquipment(raw: Json) {
     name: it.name,
     desc: it.desc ?? "",
     icon: it.icon ?? "",
+    image: itemImg(it.icon ?? ""),
     quality: it.quality,
     itemType: it.itemType,
     itemSubtype: it.itemSubtype,
@@ -121,7 +132,7 @@ function normalizeMonsters(raw: Json) {
     element: String(m.element ?? "Neutral"),
     size: m.body ?? "",
     isHandbook: (m.is_handbook ?? 0) === 1,
-    image: m.image ?? "",
+    image: monsterImg(m.image ?? ""),
     hasDrops: (m.drop_rate_entries?.length ?? 0) > 0,
     isMvp: (m.mvp_drop_rate_entries?.length ?? 0) > 0,
   }));

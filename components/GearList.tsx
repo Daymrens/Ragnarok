@@ -51,9 +51,22 @@ export function GearList({ data }: { data: Gear[] }) {
         {filtered.map((g) => (
           <Link key={g.id} href={`/database/gear/${g.id}`} className="block">
             <Card className="hover:border-gold transition-colors h-full">
-              <div className="flex items-center justify-between gap-2">
-                <h2 className="font-semibold text-gold-soft truncate">{g.name}</h2>
-                <span className="text-xs text-foreground/50 shrink-0">{g.slot}</span>
+              <div className="flex items-center gap-3">
+                {g.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={g.image}
+                    alt={g.name}
+                    className="h-12 w-12 rounded-md border border-gold-deep/30 bg-gradient-to-b from-ocean/60 to-panel object-contain shrink-0"
+                    loading="lazy"
+                  />
+                ) : null}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <h2 className="font-semibold text-gold-soft truncate">{g.name}</h2>
+                    <span className="text-xs text-foreground/50 shrink-0">{g.slot}</span>
+                  </div>
+                </div>
               </div>
               <p className="text-sm text-foreground/75 mt-2">{g.stats}</p>
               <div className="mt-2 flex items-center justify-between gap-2">

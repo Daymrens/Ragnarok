@@ -97,6 +97,8 @@ export interface Gear {
   slot: GearSlot;
   stats: string;
   refineNote?: string;
+  /** optional portrait/icon url (remote or local). falls back to a placeholder */
+  image?: string;
 }
 
 export interface GameEvent {

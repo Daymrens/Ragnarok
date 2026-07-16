@@ -60,6 +60,7 @@ interface RwGear {
   id: string;
   name: string;
   itemType: number | string;
+  image: string;
   stats: { attr: string; value: number }[];
 }
 
@@ -134,6 +135,7 @@ export function getMergedGear(): Gear[] {
       slot: GEAR_SLOT_BY_TYPE[String(g.itemType)] ?? "Accessory",
       stats: g.stats.map((s) => `${s.attr} +${s.value}`).join(", "),
       refineNote: "Safe refine to +15.",
+      image: g.image || undefined,
     }));
   return [...curatedGear, ...extras];
 }

@@ -27,9 +27,20 @@ export default async function GearDetailPage({
       </Link>
 
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-bold text-gold">{g.name}</h1>
-          <p className="text-sm text-foreground/60 mt-1">{g.slot}</p>
+        <div className="flex items-center gap-4">
+          {g.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={g.image}
+              alt={g.name}
+              className="h-16 w-16 rounded-lg border border-gold-deep/30 bg-gradient-to-b from-ocean/60 to-panel object-contain"
+              loading="lazy"
+            />
+          ) : null}
+          <div>
+            <h1 className="text-2xl font-bold text-gold">{g.name}</h1>
+            <p className="text-sm text-foreground/60 mt-1">{g.slot}</p>
+          </div>
         </div>
         <SourceBadge id={g.id} />
       </div>
