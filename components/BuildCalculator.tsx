@@ -11,6 +11,8 @@ import {
   type AspdInput,
 } from "@/lib/calc/aspd";
 import { calculateRefine, REFINE_MAX } from "@/lib/calc/refine";
+import { estimateDamage } from "@/lib/damageCalc";
+import { ELEMENTS } from "@/lib/data/elements";
 import { encodeBuild, decodeBuild } from "@/lib/buildEncode";
 import type { BuildState } from "@/lib/data/types";
 import { ListHeader } from "@/components/ui";
@@ -164,6 +166,20 @@ export function BuildCalculator() {
     }
     return totals;
   }, [loadout]);
+
+  const gearAtk = setTotals["ATK"] ?? 0;
+
+  const damage = useMemo(
+    () =>
+      estimateDamage({
+        atk: atk + gearAtk,
+        refine: refineTarget,
+        element,
+        targetElement,
+        targetDef,
+      }),
+    [atk, gearAtk, refineTarget, element, targetElement, targetDef]
+  );
 
   const aspd = useMemo(
     () => calculateAspd({ baseAspd, agi, dex, buffs }),
@@ -326,6 +342,67 @@ export function BuildCalculator() {
           </div>
         </section>
       </div>
+
+      {/* Estimated Damage */}
+      <section className="card-modern p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-gold-soft">Estimated Damage</h2>
+          <span className="text-[10px] text-crimson/80">estimate only</span>
+        </div>
+        <p className="text-xs text-foreground/60">
+          Approximate model — not verified against live combat logs. Use for relative
+          comparison only.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <NumberField label="ATK" value={atk} onChange={setAtk} />
+          <label className="block text-sm">
+            <span className="text-foreground/70">Your element</span>
+            <select
+              value={element}
+              onChange={(e) => setElement(e.target.value as Element)}
+              className="input-field mt-1 w-full rounded-md px-2 py-1.5"
+            >
+              {ELEMENTS.map((el) => (
+                <option key={el} value={el}>
+                  {el}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="text-foreground/70">Target element</span>
+            <select
+              value={targetElement}
+              onChange={(e) => setTargetElement(e.target.value as Element)}
+              className="input-field mt-1 w-full rounded-md px-2 py-1.5"
+            >
+              {ELEMENTS.map((el) => (
+                <option key={el} value={el}>
+                  {el}
+                </option>
+              ))}
+            </select>
+          </label>
+          <NumberField label="Target DEF" value={targetDef} onChange={setTargetDef} />
+        </div>
+        <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="rounded-lg border border-panel-2 p-3">
+            <p className="text-xs text-foreground/55">Min</p>
+            <p className="text-xl font-mono text-foreground/80">{damage.min}</p>
+          </div>
+          <div className="rounded-lg border border-gold/40 bg-gold/5 p-3">
+            <p className="text-xs text-foreground/55">Avg</p>
+            <p className="text-xl font-mono text-gold-soft font-semibold">{damage.avg}</p>
+          </div>
+          <div className="rounded-lg border border-panel-2 p-3">
+            <p className="text-xs text-foreground/55">Max</p>
+            <p className="text-xl font-mono text-foreground/80">{damage.max}</p>
+          </div>
+        </div>
+        <p className="text-xs text-foreground/50">
+          Includes gear ATK from the Gear Set Builder ({gearAtk}) and refine +{refineTarget}.
+        </p>
+      </section>
 
       {/* Gear Set Builder */}
       <section className="card-modern p-4 space-y-4">
